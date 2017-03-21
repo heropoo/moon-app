@@ -1,0 +1,25 @@
+{
+    "require": {
+        "symfony/http-kernel": "^3.2",
+        "symfony/routing": "^3.2",
+        "twig/twig": "^1.32",
+        "illuminate/database": "^5.1"
+    },
+    "autoload":{
+        "psr-4":{
+            "": "libraries/",
+            "app\\": "app/"
+        },
+        "files":[
+            "bootstrap/helpers.php",
+            "bootstrap/routes.php",
+            "bootstrap/database.php"
+        ]
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
+    }
+}
