@@ -1,5 +1,5 @@
 <?php
-namespace xxdx;
+namespace Moon;
 
 use app\controllers\IndexController;
 use \Symfony\Component\HttpFoundation\JsonResponse;

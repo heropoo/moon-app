@@ -6,7 +6,7 @@
  * Time: 上午1:08
  */
 
-namespace xxdx;
+namespace Moon;
 
 
 class Exception extends \Exception

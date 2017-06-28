@@ -1,5 +1,5 @@
 <?php
-namespace xxdx;
+namespace Moon;
 
 use Symfony\Component\Debug\Debug;
 use Symfony\Component\Debug\DebugClassLoader;
@@ -16,6 +16,7 @@ use Symfony\Component\Routing\RequestContext;
 
 /**
  * Application
+ * @property \Moon\Db\Connection $db
  * User: yy
  * Date: 17-3-8
  * Time: 上午12:37
@@ -31,37 +32,61 @@ class Application
     protected $errorReportingLevel = E_ALL;
     protected $debug = false;
     protected $charset = 'UTF-8';
+    protected $timezone = 'UTC';
+
+    /**
+     * @var Request
+     */
+    protected $request;
 
     public function __construct($rootPath, $configPath = null, $appPath = null)
     {
         if(!is_dir($rootPath)){
             throw new Exception("Directory '$rootPath' is not exists!");
         }
-
         $this->rootPath = realpath($rootPath);
 
-        if(!is_null($configPath)){
-            if(!is_dir($configPath)){
-                throw new Exception("Directory '$configPath' is not exists!");
-            }
-            $this->configPath = realpath($configPath);
-        }else{
-            $this->configPath = $this->rootPath.'/config';
+        if(is_null($configPath)){
+            $configPath = $this->rootPath.'/config';
         }
+        if(!is_dir($configPath)){
+            throw new Exception("Directory '$configPath' is not exists!");
+        }
+        $this->configPath = realpath($configPath);
 
         Config::setConfigDir($this->configPath);
-        $this->config = Config::get('app');
+        $this->config = Config::get('app', true);
 
-        if(!is_null($appPath)){
-            if(!is_dir($appPath)){
-                throw new Exception("Directory '$appPath' is not exists!");
-            }
-            $this->appPath = realpath($appPath);
-        }else{
-            $this->appPath = $this->rootPath.'/app';
+        if(is_null($appPath)){
+            $appPath = $this->rootPath.'/app';
+        }
+        if(!is_dir($appPath)){
+            throw new Exception("Directory '$appPath' is not exists!");
+        }
+        $this->appPath = realpath($appPath);
+
+        $this->init();
+
+        Moon::$app = $this;
+    }
+
+    protected function init(){
+        if (!empty($this->config['timezone'])) {
+            $this->timezone = $this->config['timezone'];
+            date_default_timezone_set($this->timezone);
         }
 
-        App::$app = $this;
+        if (!empty($this->config['charset'])) {
+            $this->charset = $this->config['charset'];
+        }
+
+        if (isset($this->config['session']['auto_start']) && $this->config['session']['auto_start'] == false) {
+        }else{
+            if (!empty($this->config['session']['name'])) {
+                session_name($this->config['session']['name']);
+            }
+            session_start();
+        }
     }
 
     public function enableDebug($errorReportingLevel = E_ALL){
@@ -71,13 +96,12 @@ class Application
     }
 
     public function run(){
-
         Debug::enable($this->errorReportingLevel , $this->debug);
         ExceptionHandler::register($this->debug, $this->charset);
         //DebugClassLoader::enable();
 
         // create the Request object
-        $request = Request::createFromGlobals();
+        $this->request = Request::createFromGlobals();
 
         $routes = Route::getRouteCollection();
 
@@ -96,13 +120,13 @@ class Application
 
         // actually execute the kernel, which turns the request into a response
         // by dispatching events, calling a controller, and returning the response
-        $response = $kernel->handle($request);
+        $response = $kernel->handle($this->request);
 
         // send the headers and echo the content
         $response->send();
 
         // triggers the kernel.terminate event
-        $kernel->terminate($request, $response);
+        $kernel->terminate($this->request, $response);
     }
 
     public function __call($name, $arguments)
@@ -114,5 +138,23 @@ class Application
             }
         }
         throw new Exception('Call to undefined method ' . get_class($this) . '::' . $name . '()');
+    }
+
+    public function __get($name)
+    {
+        if (isset($this->config['components'][$name])) {
+            $params = $this->config['components'][$name];
+            $className = $params['class'];
+            unset($params['class']);
+            $this->$name = new $className();
+            if (!empty($params)) {
+                foreach ($params as $attribute => $value) {
+                    $this->$name->$attribute = $value;
+                }
+            }
+            return $this->$name;
+        } else {
+            throw new Exception('Undefined property: '.get_class($this).'::$'.$name);
+        }
     }
 }

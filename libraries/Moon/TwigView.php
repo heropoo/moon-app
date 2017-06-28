@@ -6,10 +6,10 @@
  * Time: 14:34
  */
 
-namespace xxdx;
+namespace Moon;
 
 
-class View
+class TwigView
 {
     protected $viewPath;
 

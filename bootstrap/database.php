@@ -7,7 +7,9 @@
  * Time: 15:26
  */
 
-$config = require dirname(__DIR__).'/config/database.php';
+//$config = require dirname(__DIR__).'/config/database.php';
+\Moon\Config::setConfigDir(dirname(__DIR__).'/config');
+$config = \Moon\Config::get('database');
 
 // Eloquent ORM
 $capsule = new Illuminate\Database\Capsule\Manager();

@@ -6,7 +6,7 @@
  * Time: 15:07
  */
 
-namespace xxdx;
+namespace Moon;
 
 class Config
 {

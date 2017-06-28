@@ -6,13 +6,13 @@
  * Time: 11:04
  */
 
-namespace xxdx;
+namespace Moon;
 
 use Symfony\Component\Routing\RouteCollection;
 
 /**
  * Class Route
- * @package xxdx
+ * @package Moon
  */
 class Route
 {
@@ -28,6 +28,26 @@ class Route
      */
     protected static $routes;
 
+    /**
+     * Register a new custom method route.
+     *
+     * @param  array $methods
+     * @param  string $uri
+     * @param  \Closure|array|string $action
+     */
+    public static function match($methods, $uri, $action){
+        static::addRoute($methods, $uri, $action);
+    }
+
+    /**
+     * Register a new route.
+     *
+     * @param  string $uri
+     * @param  \Closure|array|string $action
+     */
+    public static function any($uri, $action){
+        static::addRoute(static::$verbs, $uri, $action);
+    }
 
     /**
      * Register a new GET route.

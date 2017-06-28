@@ -7,5 +7,5 @@
  */
 
 return [
-
+    'timezone'=>'Asia/Shanghai',
 ];

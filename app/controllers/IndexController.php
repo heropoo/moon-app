@@ -4,8 +4,8 @@ namespace app\controllers;
 use app\models\User;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Request;
-use xxdx\App;
-use xxdx\Controller;
+use Moon\App;
+use Moon\Controller;
 
 /**
  * Created by PhpStorm.
