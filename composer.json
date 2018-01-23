@@ -1,25 +1,26 @@
 {
+    "name": "heropoo/moon-app",
+    "description": "Moon app is a lightweight PHP framework",
+    "keywords": ["moon", "framework"],
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Heropoo",
+            "email": "aiyouyou1000@163.com"
+        }
+    ],
     "require": {
-        "symfony/http-kernel": "^3.2",
-        "symfony/routing": "^3.2",
-        "twig/twig": "^1.32",
-        "illuminate/database": "^5.1"
+        "php": ">=5.5.9",
+        "heropoo/routing": "*",
+        "illuminate/database": "^5.1",
+        "monolog/monolog": "^1.0",
+        "filp/whoops": "^2.1"
     },
     "autoload":{
         "psr-4":{
             "": "libraries/",
-            "app\\": "app/"
-        },
-        "files":[
-            "bootstrap/helpers.php",
-            "bootstrap/routes.php",
-            "bootstrap/database.php"
-        ]
-    },
-    "repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://packagist.phpcomposer.com"
+            "App\\": "app/"
         }
     }
 }

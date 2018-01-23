@@ -1,25 +1,26 @@
 <?php
+
 namespace Moon;
 
-use Symfony\Component\Debug\Debug;
-use Symfony\Component\Debug\DebugClassLoader;
-use Symfony\Component\Debug\ExceptionHandler;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Moon\Routing\Router;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
-use Symfony\Component\HttpKernel\Controller\ControllerResolver;
-use Symfony\Component\HttpKernel\EventListener\RouterListener;
-use Symfony\Component\HttpKernel\HttpKernel;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\RouteCollection;
+use Whoops\Handler\JsonResponseHandler;
+use Whoops\Handler\PlainTextHandler;
+use Whoops\Handler\PrettyPageHandler;
+use Whoops\Run;
 
 /**
- * Application
- * @property \Moon\Db\Connection $db
- * User: yy
- * Date: 17-3-8
- * Time: 上午12:37
+ * Class Application
+ * @package Moon
  */
 class Application
 {
@@ -29,10 +30,17 @@ class Application
 
     protected $config = [];
 
-    protected $errorReportingLevel = E_ALL;
+    protected $environment = 'production';
     protected $debug = false;
     protected $charset = 'UTF-8';
     protected $timezone = 'UTC';
+
+    protected $plugins = [];
+
+    /**
+     * @var Router
+     */
+    protected $router;
 
     /**
      * @var Request
@@ -41,15 +49,15 @@ class Application
 
     public function __construct($rootPath, $configPath = null, $appPath = null)
     {
-        if(!is_dir($rootPath)){
+        if (!is_dir($rootPath)) {
             throw new Exception("Directory '$rootPath' is not exists!");
         }
         $this->rootPath = realpath($rootPath);
 
-        if(is_null($configPath)){
-            $configPath = $this->rootPath.'/config';
+        if (is_null($configPath)) {
+            $configPath = $this->rootPath . '/config';
         }
-        if(!is_dir($configPath)){
+        if (!is_dir($configPath)) {
             throw new Exception("Directory '$configPath' is not exists!");
         }
         $this->configPath = realpath($configPath);
@@ -57,20 +65,47 @@ class Application
         Config::setConfigDir($this->configPath);
         $this->config = Config::get('app', true);
 
-        if(is_null($appPath)){
-            $appPath = $this->rootPath.'/app';
+        if (is_null($appPath)) {
+            $appPath = $this->rootPath . '/app';
         }
-        if(!is_dir($appPath)){
+        if (!is_dir($appPath)) {
             throw new Exception("Directory '$appPath' is not exists!");
         }
         $this->appPath = realpath($appPath);
 
         $this->init();
 
-        Moon::$app = $this;
+        $this->request = Request::createFromGlobals();
+
+        require_once __DIR__ . '/helpers.php';
+
+        \Moon::$app = $this;
     }
 
-    protected function init(){
+    protected function handleError()
+    {
+        $logger = new Logger('app');
+        $whoops = new Run();
+        if ($this->debug) {
+            if ($this->request->isXmlHttpRequest()) {
+                $whoops->pushHandler(new JsonResponseHandler());
+            } else {
+                $handler = new PrettyPageHandler();
+                $handler->setPageTitle('Moon App');
+                $whoops->pushHandler($handler);
+            }
+        }
+        $handler = new PlainTextHandler($logger);
+        $handler->loggerOnly(true);
+        $whoops->pushHandler($handler);
+        $whoops->register();
+
+        $filename = $this->rootPath . '/runtime/logs/app-' . date('Y-m-d') . '.log';
+        $logger->pushHandler(new StreamHandler($filename, Logger::ERROR));
+    }
+
+    protected function init()
+    {
         if (!empty($this->config['timezone'])) {
             $this->timezone = $this->config['timezone'];
             date_default_timezone_set($this->timezone);
@@ -81,7 +116,7 @@ class Application
         }
 
         if (isset($this->config['session']['auto_start']) && $this->config['session']['auto_start'] == false) {
-        }else{
+        } else {
             if (!empty($this->config['session']['name'])) {
                 session_name($this->config['session']['name']);
             }
@@ -89,44 +124,134 @@ class Application
         }
     }
 
-    public function enableDebug($errorReportingLevel = E_ALL){
-        $this->errorReportingLevel = $errorReportingLevel;
+    public function enableDebug()
+    {
         $this->debug = true;
         return $this;
     }
 
-    public function run(){
-        Debug::enable($this->errorReportingLevel , $this->debug);
-        ExceptionHandler::register($this->debug, $this->charset);
-        //DebugClassLoader::enable();
+    /**
+     * @param array $plugins
+     * @return $this
+     */
+    public function bootstrap(array $plugins)
+    {
+        $this->plugins = $plugins;
+        return $this;
+    }
 
-        // create the Request object
-        $this->request = Request::createFromGlobals();
+    protected function bootstrapPlugins()
+    {
+        foreach ($this->plugins as $plugin) {
+            include_once $this->rootPath . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . $plugin . '.php';
+        }
+        return $this;
+    }
 
-        $routes = Route::getRouteCollection();
+    public function run()
+    {
+        $this->handleError();
 
-        $matcher = new UrlMatcher($routes, new RequestContext());
+        $defaultPlugins = $this->config['bootstrap'];
+        $this->plugins = array_merge($this->plugins, $defaultPlugins);
+        $this->plugins = array_unique($this->plugins);
+        $this->bootstrapPlugins();
 
-        $dispatcher = new EventDispatcher();
-        // ... add some event listeners
-        $dispatcher->addSubscriber(new RouterListener($matcher, new RequestStack()));
+        $this->router = new Router(null, [
+            'namespace' => 'App\\Controllers',
+            //'middleware'=>['sessionStart'],
+            //'prefix'=>''
+        ]);
 
-        // create your controller and argument resolvers
-        $controllerResolver = new ControllerResolver();
-        $argumentResolver = new ArgumentResolver();
+        require $this->rootPath . '/routes/web.php';
 
-        // instantiate the kernel
-        $kernel = new HttpKernel($dispatcher, $controllerResolver, new RequestStack(), $argumentResolver);
+        $routes = $this->router->getRoutes();
 
-        // actually execute the kernel, which turns the request into a response
-        // by dispatching events, calling a controller, and returning the response
-        $response = $kernel->handle($this->request);
+        try {
+            $response = $this->resolveRequest($this->request, $routes);
+        } catch (ResourceNotFoundException $e) {
+            $response = $this->makeResponse($e->getMessage(), 404);
+        } catch (MethodNotAllowedException $e) {
+            $response = $this->makeResponse('Method not allow', 405);
+        }
 
-        // send the headers and echo the content
         $response->send();
+    }
 
-        // triggers the kernel.terminate event
-        $kernel->terminate($this->request, $response);
+    /**
+     * @param Request $request
+     * @param RouteCollection $routes
+     * @return JsonResponse|Response
+     */
+    protected function resolveRequest(Request $request, RouteCollection $routes)
+    {
+        $context = new RequestContext();
+        $context->fromRequest($request);
+
+        //match
+        $matcher = new UrlMatcher($routes, $context);
+        $matchResult = $matcher->match($request->getPathInfo());
+
+        return $this->resolveController($matchResult);
+    }
+
+    /**
+     * @param mixed $data
+     * @param int $status
+     * @return JsonResponse|Response
+     */
+    protected function makeResponse($data, $status = 200)
+    {
+        if ($data instanceof Response) {
+            return $data;
+        } else if (is_array($data) || is_object($data)) {
+            return new JsonResponse($data, $status);
+        } else {
+            return new Response(strval($data), $status);
+        }
+    }
+
+    /**
+     * @param array $matchResult
+     * @return JsonResponse|Response
+     */
+    protected function resolveController($matchResult)
+    {
+        /**
+         * resolve controller
+         */
+        $action = $matchResult['_controller'];
+        unset($matchResult['_controller']);
+        unset($matchResult['_route']);
+        if ($action instanceof \Closure) {
+            $data = call_user_func($action, $this->router);
+            return $this->makeResponse($data);
+        } else {
+            $actionArr = explode('::', $action);
+            $controllerName = $actionArr[0];
+            if (!class_exists($controllerName)) {
+                return $this->makeResponse("Controller class '$controllerName' is not exists!", 404);
+            }
+            $controller = new $controllerName;
+            $methodName = $actionArr[1];
+            if (!method_exists($controller, $methodName)) {
+                return $this->makeResponse("Controller method '$controllerName::$methodName' is not defined!", 404);
+            }
+
+            if (empty($matchResult)) {
+                $data = call_user_func([$controller, $methodName]);
+            } else {
+                $data = call_user_func_array([$controller, $methodName], $matchResult);
+            }
+
+            return $this->makeResponse($data);
+        }
+    }
+
+    public function setDebug(bool $debug)
+    {
+        $this->debug = $debug;
+        return $this;
     }
 
     public function __call($name, $arguments)
@@ -138,23 +263,5 @@ class Application
             }
         }
         throw new Exception('Call to undefined method ' . get_class($this) . '::' . $name . '()');
-    }
-
-    public function __get($name)
-    {
-        if (isset($this->config['components'][$name])) {
-            $params = $this->config['components'][$name];
-            $className = $params['class'];
-            unset($params['class']);
-            $this->$name = new $className();
-            if (!empty($params)) {
-                foreach ($params as $attribute => $value) {
-                    $this->$name->$attribute = $value;
-                }
-            }
-            return $this->$name;
-        } else {
-            throw new Exception('Undefined property: '.get_class($this).'::$'.$name);
-        }
     }
 }

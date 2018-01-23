@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Database
  * User: ttt
@@ -7,18 +6,13 @@
  * Time: 15:26
  */
 
-//$config = require dirname(__DIR__).'/config/database.php';
-\Moon\Config::setConfigDir(dirname(__DIR__).'/config');
-$config = \Moon\Config::get('database');
-
+$config = config('database');
 // Eloquent ORM
 $capsule = new Illuminate\Database\Capsule\Manager();
-
 foreach($config['connections'] as $name => $val){
     if($config['default'] == $name){
         $capsule->addConnection($val, 'default');
     }
     $capsule->addConnection($val, $name);
 }
-
 $capsule->bootEloquent();
