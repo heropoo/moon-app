@@ -1,3 +1,3 @@
-# moon app
+# Moon App
 
-Moon app is a lightweight PHP framework
+Moon App is a web application based on moon framework.
