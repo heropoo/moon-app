@@ -11,11 +11,8 @@
         }
     ],
     "require": {
-        "php": ">=5.5.9",
-        "heropoo/routing": "*",
-        "illuminate/database": "^5.1",
-        "monolog/monolog": "^1.0",
-        "filp/whoops": "^2.1"
+        "php": ">=5.4",
+        "heropoo/moon": "*"
     },
     "autoload":{
         "psr-4":{
