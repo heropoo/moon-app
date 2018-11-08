@@ -7,17 +7,12 @@
  */
 namespace App\Commands;
 
-
-use App\Services\WSService;
 use Moon\Command;
 
-class WSServerCommand extends Command
+class HelloCommand extends Command
 {
     public function run(){
-        $ip = '0.0.0.0';
-        $port = config('ws.server.port');
-        $service = new WSService();
-        $service->run($ip, $port);
+        echo 'Hello Moon'.PHP_EOL;
         return 0;
     }
 

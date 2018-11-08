@@ -6,5 +6,5 @@
  * Time: 0:20
  */
 
-Moon::command('ws-server::run', 'WSServerCommand::run', 'Run Websocket Server');
-Moon::command('ws-server::test', 'WSServerCommand::test', 'Run Websocket Server test');
+Moon::command('hello:run', 'HelloCommand::run', 'Hello Moon');
+Moon::command('test', 'HelloCommand::test', 'test');
