@@ -17,12 +17,13 @@
  */
 $router = Moon::$app->get('router');
 
+$router->get('/', 'IndexController::index');
+$router->get('test', 'IndexController::test');
+
 $router->group(['middleware'=>'App\Middleware\SessionStart'], function ($router){
     /**
      * @var \Moon\Routing\Router $router
      */
-    $router->get('test', 'IndexController::test');
-
     $router->get('register', 'UserController::register');
     $router->post('register', 'UserController::post_register');
     $router->get('login', 'UserController::login');
@@ -33,7 +34,6 @@ $router->group(['middleware'=>'App\Middleware\SessionStart'], function ($router)
         /**
          * @var \Moon\Routing\Router $router
          */
-        $router->get('', 'IndexController::index');
-        $router->get('chat', 'IndexController::chat');
+
     });
 });

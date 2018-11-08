@@ -16,6 +16,7 @@ class IndexController extends Controller
     }
 
     public function test(){
-        return $this->render('test');
+        //return $this->render('test');
+        return 'test';
     }
 }
