@@ -1,23 +1,27 @@
 {
-    "name": "heropoo/moon-app",
-    "description": "Moon app is a lightweight PHP framework",
-    "keywords": ["moon", "framework"],
-    "type": "project",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Heropoo",
-            "email": "aiyouyou1000@163.com"
-        }
-    ],
-    "require": {
-        "php": ">=5.4",
-        "heropoo/moon": "*"
-    },
-    "autoload":{
-        "psr-4":{
-            "": "libraries/",
-            "App\\": "app/"
-        }
+  "name": "heropoo/moon-app",
+  "description": "Moon app is a lightweight PHP framework",
+  "keywords": [
+    "moon",
+    "framework"
+  ],
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Heropoo",
+      "email": "aiyouyou1000@163.com"
     }
+  ],
+  "require": {
+    "php": ">=5.4",
+    "ext-pdo": "*",
+    "ext-json": "*",
+    "heropoo/moon": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/"
+    }
+  }
 }
