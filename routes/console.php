@@ -6,5 +6,6 @@
  * Time: 0:20
  */
 
-Moon::command('hello:run', 'HelloCommand::run', 'Hello Moon');
+Moon::command('hello', 'HelloCommand::run', 'Hello Moon');
 Moon::command('test', 'HelloCommand::test', 'test');
+Moon::command('fmc', 'FillModelCommentCommand::run', 'Fill Model Comment');

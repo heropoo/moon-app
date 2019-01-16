@@ -24,6 +24,6 @@ class TestController extends Controller
         /** @var Connection $db */
         $db = \Moon::$app->get('db');
         //dd($db);
-        dump($db->fetchAll('show tables'));
+        dump($db->fetchAll('show full columns from {{user}}'));
     }
 }

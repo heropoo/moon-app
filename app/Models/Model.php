@@ -15,7 +15,9 @@ class Model extends Table
 {
     public function __construct($tableName = null, $db = null)
     {
-        $db = \Moon::$app->get('db');
+        if(is_null($db)){
+            $db = \Moon::$app->get('db');
+        }
         parent::__construct($tableName, $db);
     }
 
