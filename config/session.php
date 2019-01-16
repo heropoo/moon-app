@@ -8,6 +8,6 @@
 
 return [
     'name'=>'MOON-SESSION-ID',
-    'cookie_lifetime' => 3 * 3600,  //3h
+    'cookie_lifetime' => 3 * 3600,  //3hour
     //'read_and_close' => true
 ];

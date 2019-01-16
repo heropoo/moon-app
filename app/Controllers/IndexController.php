@@ -12,11 +12,6 @@ use Moon\Controller;
 class IndexController extends Controller
 {
     public function index(){
-        return 'welcome to moon app';
-    }
-
-    public function test(){
-        //return $this->render('test');
-        return 'test';
+        return $this->render('hello');
     }
 }

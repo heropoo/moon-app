@@ -18,7 +18,8 @@
 $router = Moon::$app->get('router');
 
 $router->get('/', 'IndexController::index');
-$router->get('test', 'IndexController::test');
+$router->get('test', 'TestController::index');
+$router->get('test/db', 'TestController::db');
 
 $router->group(['middleware'=>'App\Middleware\SessionStart'], function ($router){
     /**
