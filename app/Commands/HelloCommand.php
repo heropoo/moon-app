@@ -15,8 +15,4 @@ class HelloCommand extends Command
         echo 'Hello Moon'.PHP_EOL;
         return 0;
     }
-
-    public function test(){
-        echo __METHOD__.'::test';
-    }
 }

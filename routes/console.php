@@ -7,5 +7,4 @@
  */
 
 Moon::command('hello', 'HelloCommand::run', 'Hello Moon');
-Moon::command('test', 'HelloCommand::test', 'test');
 Moon::command('fmc', 'FillModelCommentCommand::run', 'Fill Model Comment');
