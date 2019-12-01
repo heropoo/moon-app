@@ -7,9 +7,9 @@
  */
 namespace App\Commands;
 
-use Moon\Command;
 
-class HelloCommand extends Command
+
+class HelloCommand
 {
     public function run(){
         echo 'Hello Moon'.PHP_EOL;

@@ -1,7 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: ttt
+ * User: Heropoo
  * Date: 2018/1/29
  * Time: 14:14
  */
@@ -17,14 +16,15 @@ class SessionStart
      * @param Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next){
+    public function handle($request, Closure $next)
+    {
         $config = config('session');
-        if(!isset($_SESSION)){
-            if(isset($config['session']['name'])){
-                session_name($config['session']['name']);
-                unset($config['session']['name']);
-            }
-            empty($config) ? session_start() : session_start($config);
+        if (isset($config['save_path']) && !is_dir($config['save_path'])) {
+            mkdir($config['save_path']);
+        }
+        if (session_status() == PHP_SESSION_NONE) {
+            $config = empty($config) ? [] : $config;
+            session_start($config);
         }
         return $next($request);
     }
