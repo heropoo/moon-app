@@ -18,7 +18,8 @@
     "ext-pdo": "*",
     "ext-json": "*",
     "heropoo/moon": "*",
-    "heropoo/cache": "*"
+    "heropoo/cache": "*",
+    "heropoo/pagination": "*"
   },
   "autoload": {
     "psr-4": {
