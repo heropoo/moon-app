@@ -12,7 +12,14 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
     'timezone' => 'Asia/Shanghai',
     'components' => [
-        'db' => include __DIR__ . '/db.php'
+        'db' => include __DIR__ . '/db.php',
+        'redis' => [
+            'class' => 'Moon\Cache\Redis',
+            'host' => env('REDIS_HOST', 'localhost'),
+            'port' => env('REDIS_PORT', 6379),
+            'password' => env('REDIS_PASSWORD'),
+            'db' => env('REDIS_DATABASE', 0)
+        ]
     ],
-    'bootstrap' => ['db']
+    'bootstrap' => ['db', 'redis']
 ];
