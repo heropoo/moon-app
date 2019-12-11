@@ -7,7 +7,7 @@
  */
 
 return [
-    'driver'=> 'file', //file or redis
+    'driver'=> env('SESSION_DRIVER', 'file'), //file or redis
     'name'=>'MOON-SESSION-ID',
     'cookie_lifetime' => 3 * 3600,  //3hour
     //'read_and_close' => true,
