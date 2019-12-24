@@ -10,3 +10,4 @@ use Moon\Routing\Router;
 /** @var Router $router */
 
 $router->get('/', 'IndexController::index');
+$router->get('/test/s', 'TestController::s');

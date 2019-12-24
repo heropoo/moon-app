@@ -19,7 +19,8 @@
     "ext-json": "*",
     "heropoo/moon": "*",
     "heropoo/cache": "*",
-    "heropoo/pagination": "*"
+    "heropoo/pagination": "*",
+    "jeremeamia/superclosure": "^2.4"
   },
   "autoload": {
     "psr-4": {
