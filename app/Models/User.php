@@ -9,6 +9,7 @@ namespace App\Models;
 
 
 use Moon\Db\Table;
+use Moon;
 
 /**
  * Class App\Models\User 
@@ -31,10 +32,10 @@ class User extends Table
     }
 
     /**
-     * @return mixed|\Moon\Db\Connection
+     * @return \Moon\Db\Connection
      */
     public static function getDb()
     {
-        return \Moon::$container->get('db');
+        return Moon::$container->get('db');
     }
 }
