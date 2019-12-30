@@ -13,7 +13,9 @@ class IndexController extends Controller
 {
     public function index()
     {
-        $_SESSION['page'] = request()->getUri();
-        return $this->render('hello');
+        //$_SESSION['page'] = request()->getUri();
+        $view = view('hello', [], 'layouts/main');
+        $view->title = 'Welcome to use Moon App';
+        return $view;
     }
 }
