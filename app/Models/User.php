@@ -8,6 +8,9 @@
 namespace App\Models;
 
 
+use Moon\Db\Table;
+use Moon;
+
 /**
  * Class App\Models\User 
  * @property integer $id 
@@ -19,8 +22,20 @@ namespace App\Models;
  * @property string $created_at 
  * @property string $updated_at 
  */
-class User extends Model
+class User extends Table
 {
-    protected $tableName = '{{user}}';
     protected $primaryKey = 'id';
+
+    public static function tableName()
+    {
+        return '{{user}}';
+    }
+
+    /**
+     * @return \Moon\Db\Connection
+     */
+    public static function getDb()
+    {
+        return Moon::$container->get('db');
+    }
 }

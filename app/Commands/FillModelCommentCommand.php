@@ -4,29 +4,30 @@
  * Date: 2018/7/14
  * Time: 1:40
  */
+
 namespace App\Commands;
 
-use App\Models\Model;
 use Moon\Db\Connection;
+use Moon\Db\Table;
 use Moon\Exception;
 
 class FillModelCommentCommand
 {
-    public function run($modelName){
-        echo 'Filling '.$modelName.PHP_EOL;
-        if(!class_exists($modelName)){
+    public function run($modelName)
+    {
+        echo 'Filling ' . $modelName . PHP_EOL;
+        if (!class_exists($modelName)) {
             throw new Exception("Class $modelName is not exists.");
         }
 
-        if(!is_subclass_of($modelName, Model::class) ){
-            throw new Exception("Class $modelName is not extends \App\Models\Model.");
+        if (!is_subclass_of($modelName, Table::class)) {
+            throw new Exception("Class $modelName is not extends \Moon\Db\Table.");
         }
 
-        /** @var Model $model */
+        /** @var Table $model */
         $model = new $modelName;
-        $tableName = $model->getTableName();
+        $tableName = $model->tablename();
         $db = $model->getDb();
-        //var_dump($db);exit;
 
         $service = new FillModelCommentService($db, $tableName);
         $res = $service->fill($modelName);
@@ -41,11 +42,13 @@ class FillModelCommentService
      */
     protected $db;
     protected $tableName;
+
     public function __construct(Connection $db, $tableName)
     {
         $this->db = $db;
         $this->tableName = $tableName;
     }
+
     public function fill($className)
     {
         $ref = new \ReflectionClass($className);
@@ -63,6 +66,7 @@ class FillModelCommentService
         }
         return true;
     }
+
     protected function getPropertiesCommentString($className)
     {
         $fields = $this->getTableFields();
@@ -72,6 +76,7 @@ class FillModelCommentService
         }
         return $commentString . " */";
     }
+
     protected function getTableFields()
     {
         $list = $this->db->fetchAll('show full columns from ' . $this->tableName);
@@ -119,6 +124,7 @@ class FillModelCommentService
         }
         return $fields;
     }
+
     protected function insertAtLine($filename, $line, $content)
     {
         $fileArr = file($filename);

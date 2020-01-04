@@ -19,7 +19,7 @@ class SessionStart
      * @param Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         $config = config('session');
         if ($config['driver'] == 'redis') {
@@ -39,5 +39,7 @@ class SessionStart
             $config = empty($config) ? [] : $config;
             session_start($config);
         }
+
+        return $next($request);
     }
 }

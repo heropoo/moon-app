@@ -10,3 +10,10 @@ use Moon\Routing\Router;
 /** @var Router $router */
 
 $router->get('/', 'IndexController::index');
+$router->get('/test/s', 'TestController::s');
+
+$router->get('/test', 'TestController::request');
+$router->post('/test', 'TestController::request');
+
+//var_dump($router->getRoutes()->getTree());
+

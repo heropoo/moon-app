@@ -19,7 +19,8 @@
     "ext-json": "*",
     "heropoo/moon": "*",
     "heropoo/cache": "*",
-    "heropoo/pagination": "*"
+    "heropoo/pagination": "*",
+    "jeremeamia/superclosure": "^2.4"
   },
   "autoload": {
     "psr-4": {
@@ -27,6 +28,10 @@
     }
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.5"
+    "phpunit/phpunit": "^7.5",
+    "phpstan/phpstan": "^0.12.3"
+  },
+  "scripts": {
+    "phpstan": "phpstan analyse app"
   }
 }
