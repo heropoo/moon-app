@@ -7,6 +7,7 @@
 
 namespace App\Controllers;
 
+use App\Models\User;
 use Moon\Controller;
 
 class UserController extends Controller
