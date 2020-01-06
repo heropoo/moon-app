@@ -15,22 +15,20 @@ use SuperClosure\Serializer;
 
 class TestController extends Controller
 {
-    public function index()
+    public function indexAction()
     {
-        //return 'test';
-        echo \Moon::environment();
-        dd(\Moon::$app);
+        return \Moon::environment();
     }
 
-    public function db()
+    public function dbAction()
     {
         /** @var Connection $db */
-        $db = \Moon::$app->get('db');
+        $db = \Moon::$container->get('db');
         //dd($db);
         dump($db->fetchAll('show full columns from {{user}}'));
     }
 
-    public function s()
+    public function sAction()
     {
         $serializer = new Serializer();
 
@@ -39,7 +37,7 @@ class TestController extends Controller
 
         echo '<pre>';
 //        var_dump($router->getRoutes());
-        $route = $router->getRoutes()->get('GET:/api/{version:v\d+}/{aid:\d+}/user/list');
+        $route = $router->getRoutes()->get('user.list');
         var_dump($route);
         $serialized = $serializer->serialize($route->getAction());
         echo $serialized;
@@ -50,7 +48,7 @@ class TestController extends Controller
         $response->send();
     }
 
-    public function request()
+    public function requestAction()
     {
         echo request()->getPathInfo();
         echo '<br>';
