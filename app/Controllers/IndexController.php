@@ -13,8 +13,16 @@ use Symfony\Component\HttpFoundation\Request;
 
 class IndexController extends Controller
 {
-    public function index(Request $request, User $user)
+    protected $user;
+
+    public function __construct(User $user)
     {
+        $this->user = $user;
+    }
+
+    public function index(Request $request)
+    {
+//        var_dump($this->user);
         //$_SESSION['page'] = request()->getUri();
         $view = view('hello', [], 'layouts/main');
         $view->title = 'Welcome to use Moon App';
