@@ -8,10 +8,9 @@
 namespace App\Controllers;
 
 use App\Models\User;
-use Moon\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
-class IndexController extends Controller
+class IndexController
 {
     protected $user;
 
@@ -22,8 +21,6 @@ class IndexController extends Controller
 
     public function index(Request $request)
     {
-//        var_dump($this->user);
-        //$_SESSION['page'] = request()->getUri();
         $view = view('hello', [], 'layouts/main');
         $view->title = 'Welcome to use Moon App';
         return $view;

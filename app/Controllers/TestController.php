@@ -7,13 +7,11 @@
 
 namespace App\Controllers;
 
-
-use Moon\Controller;
 use Moon\Db\Connection;
 use Moon\Routing\Router;
 use SuperClosure\Serializer;
 
-class TestController extends Controller
+class TestController
 {
     public function indexAction()
     {

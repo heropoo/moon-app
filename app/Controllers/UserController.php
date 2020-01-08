@@ -7,29 +7,30 @@
 
 namespace App\Controllers;
 
-use App\Models\User;
-use Moon\Controller;
-
-class UserController extends Controller
+class UserController
 {
-    public function login(){
+    public function login()
+    {
         return 'login';
-        //return $this->render('login');
     }
 
-    public function post_login(){
+    public function post_login()
+    {
 
     }
 
-    public function logout(){
+    public function logout()
+    {
         return redirect('login');
     }
 
-    public function register(){
-        return $this->render('register');
+    public function register()
+    {
+        return view('register');
     }
 
-    public function post_register(){
+    public function post_register()
+    {
 
     }
 }
