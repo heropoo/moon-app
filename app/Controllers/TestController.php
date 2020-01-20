@@ -15,7 +15,7 @@ class TestController
 {
     public function indexAction()
     {
-        return \Moon::environment();
+        return \App::environment();
     }
 
     public function dbAction(Connection $db)
@@ -31,7 +31,7 @@ class TestController
         $serializer = new Serializer();
 
         /** @var Router $router */
-        $router = \Moon::$container->get('router');
+        $router = \App::$container->get('router');
 
         echo '<pre>';
 //        var_dump($router->getRoutes());

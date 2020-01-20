@@ -1,16 +1,14 @@
 <?php
 /**
- * User: Heropoo
  * Date: 2018/1/29
  * Time: 14:14
  */
 
 namespace App\Middleware;
 
-use App\Handlers\RedisSessionHandler;
-use Moon\Cache\Redis;
-use Symfony\Component\HttpFoundation\Request;
+use Moon\Request\Request;
 use Closure;
+use Moon\Session;
 
 class SessionStart
 {
@@ -22,23 +20,23 @@ class SessionStart
     public function handle(Request $request, Closure $next)
     {
         $config = config('session');
-        if ($config['driver'] == 'redis') {
-            /** @var Redis $redis */
-            $redis = \Moon::$container->get('redis');
-            $handler = new RedisSessionHandler($redis->getClient());
-            session_set_save_handler($handler, true);
+
+        if (isset($config['name'])) {
+            $sessionName = $config['name'];
         } else {
-            if (isset($config['save_path']) && !is_dir($config['save_path'])) {
-                mkdir($config['save_path']);
-            }
+            $sessionName = session_name();
         }
 
-        unset($config['driver']);
-
-        if (session_status() == PHP_SESSION_NONE) {
-            $config = empty($config) ? [] : $config;
-            session_start($config);
+        if (isset($request->cookie[$sessionName])) {
+            $sessionId = $request->cookie[$sessionName];
+        } else {
+            $sessionId = session_create_id();
         }
+
+        $cookieParams = session_get_cookie_params();
+
+        $session = new Session($sessionName, $sessionId, $cookieParams, $config);
+        $request->setSession($session);
 
         return $next($request);
     }

@@ -7,7 +7,6 @@ namespace App\Models;
 
 
 use Moon\Db\Table;
-use Moon;
 
 /**
  * Class App\Models\User 
@@ -34,6 +33,6 @@ class User extends Table
      */
     public static function getDb()
     {
-        return Moon::$container->get('db');
+        return \App::$container->get('db');
     }
 }

@@ -13,7 +13,7 @@ class DebugCommand
     public function routes()
     {
         /** @var Router $router */
-        $router = \Moon::$container->get('router');
+        $router = \App::$container->get('router');
         $routes = $router->getRoutes();
         echo "| Name | Methods | Path | Action | Middleware |\n";
         echo "-----------------------------------------------\n";

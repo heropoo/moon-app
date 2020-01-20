@@ -8,7 +8,7 @@
 namespace App\Controllers;
 
 use App\Models\User;
-use Symfony\Component\HttpFoundation\Request;
+use Moon\Request\Request;
 
 class IndexController
 {

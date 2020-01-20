@@ -6,7 +6,7 @@
  */
 
 use Moon\Routing\Router;
-use Symfony\Component\HttpFoundation\Request;
+use Moon\Request\Request;
 
 /** @var Router $router */
 

@@ -7,7 +7,7 @@
 
 namespace App\Middleware;
 
-use Symfony\Component\HttpFoundation\Request;
+use Moon\Request\Request;
 use Closure;
 
 class Auth
@@ -19,7 +19,8 @@ class Auth
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->get('username') !== 'demo' && $request->get('password') !== 'demo') {
+        //demo
+        if ($request->get('username') !== 'demo' || $request->get('password') !== 'demo') {
             return redirect('login');
         }
 
