@@ -6,13 +6,12 @@
  * Time: 11:49
  */
 
-return [
+$config = [
     'debug' => env('APP_DEBUG', false),
     'environment' => env('APP_ENV', 'production'),
     'url' => env('APP_URL', 'http://localhost'),
     'timezone' => 'Asia/Shanghai',
     'components' => [
-        'db' => include __DIR__ . '/db.php',
         'redis' => [
             'class' => 'Moon\Cache\Redis',
             'host' => env('REDIS_HOST', 'localhost'),
@@ -20,6 +19,10 @@ return [
             'password' => env('REDIS_PASSWORD'),
             'database' => env('REDIS_DATABASE', 0)
         ]
-    ],
-    'bootstrap' => ['redis']
+    ]
 ];
+
+$db = include __DIR__.'/db.php';
+$config['components'] = array_merge($config['components'], $db);
+
+return $config;

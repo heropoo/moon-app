@@ -18,11 +18,11 @@ class TestController
         return \Moon::environment();
     }
 
-    public function dbAction()
+    public function dbAction(Connection $db)
     {
         /** @var Connection $db */
-        $db = \Moon::$container->get('db');
-        //dd($db);
+        //$db = \Moon::$container->get('db2');
+        dd($db);
         dump($db->fetchAll('show full columns from {{user}}'));
     }
 
