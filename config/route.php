@@ -13,7 +13,7 @@ return [
             //'namespace' => '',
             //'prefix' => '',
             'middleware' => [
-                //'App\Middleware\SessionStart',
+                'App\Middleware\SessionStart',
             ]
         ],
         'api' => [

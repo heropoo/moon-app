@@ -8,7 +8,7 @@ namespace App\Middleware;
 
 use Moon\Request\Request;
 use Closure;
-use Moon\Session;
+use Moon\Session\Session;
 
 class SessionStart
 {
@@ -36,6 +36,9 @@ class SessionStart
         $cookieParams = session_get_cookie_params();
 
         $session = new Session($sessionName, $sessionId, $cookieParams, $config);
+
+        $session->start();
+
         $request->setSession($session);
 
         return $next($request);

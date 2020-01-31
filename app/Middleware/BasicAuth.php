@@ -24,7 +24,9 @@ class BasicAuth
                 ]
             );
         } else {
-            //demo username: demo  password: 123
+            // demo
+            // username: demo
+            // password: 123
             if ($request->server['PHP_AUTH_USER'] !== 'demo' || $request->server['PHP_AUTH_PW'] !== '123') {
                 return new Response(
                     '401 Unauthorized' . '<br> <button onclick="window.location.reload();">Login Again</button>',
@@ -35,6 +37,7 @@ class BasicAuth
                 );
             }
         }
+
         return $next($request);
     }
 }
