@@ -20,7 +20,8 @@
     "heropoo/moon": "^0.11",
     "heropoo/cache": "*",
     "heropoo/pagination": "*",
-    "jeremeamia/superclosure": "^2.4"
+    "opis/closure": "^3.5",
+    "swoole/ide-helper": "^4.4"
   },
   "autoload": {
     "psr-4": {
