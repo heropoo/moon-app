@@ -3,7 +3,8 @@
   "description": "Moon app is a lightweight PHP framework",
   "keywords": [
     "moon",
-    "framework"
+    "framework",
+    "swoole"
   ],
   "type": "project",
   "license": "MIT",
@@ -18,6 +19,11 @@
       "App\\": "app/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
   "require": {
     "php": ">=5.4",
     "ext-pdo": "*",
@@ -28,9 +34,7 @@
     "opis/closure": "^3.5"
   },
   "require-dev": {
-    "phpunit/phpunit": "^4.8.36|^7.5.18"
-  },
-  "suggest": {
-    "swoole/ide-helper": "This package is a friendly for IDE when you use swoole extension."
+    "phpunit/phpunit": "^7",
+    "swoole/ide-helper": "^4.5"
   }
 }

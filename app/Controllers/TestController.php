@@ -10,6 +10,8 @@ namespace App\Controllers;
 use Moon\Db\Connection;
 use Moon\Routing\Router;
 use SuperClosure\Serializer;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class TestController
 {
@@ -51,5 +53,18 @@ class TestController
         echo request()->getPathInfo();
         echo '<br>';
         echo request()->getMethod();
+    }
+
+    public function jsonAction()
+    {
+        /** @var Response $response */
+        $response = \App::$container->get('response');
+        $response->headers->set('Server', 'Test111');
+
+//        return new Response([
+//            'code' => 200,
+//            'msg' => 'ok'
+//        ], 200, ['Server1' => 'Test Server']);
+        return 'test';
     }
 }
