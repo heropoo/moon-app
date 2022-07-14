@@ -29,6 +29,7 @@
     "ext-pdo": "*",
     "ext-json": "*",
     "heropoo/moon": "^0.12",
+    "heropoo/db": "*",
     "heropoo/cache": "*",
     "heropoo/pagination": "*",
     "opis/closure": "^3.5"
